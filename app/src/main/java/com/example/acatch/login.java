@@ -1,12 +1,27 @@
 package com.example.acatch;
 
+import android.media.MediaPlayer;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+
+import java.util.regex.Pattern;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -23,6 +38,10 @@ public class login extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    Button btnLogin;
+    EditText etEmail, etPassword;
+    ProgressBar progressBar;
 
     public login() {
         // Required empty public constructor
@@ -59,6 +78,41 @@ public class login extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_login, container, false);
+        View view = inflater.inflate(R.layout.fragment_login, container, false);
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        btnLogin = view.findViewById(R.id.btnLoginFromFrag);
+        etEmail = view.findViewById(R.id.editTextTextEmailAddress2);
+        etPassword = view.findViewById(R.id.editTextTextPassword2);
+        progressBar = view.findViewById(R.id.progressBar);
+        btnLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                progressBar.setVisibility(View.VISIBLE);
+                if (validateEmail(etEmail) && validatePassword(etPassword)) {
+
+                    firebaseAuth.signInWithEmailAndPassword(etEmail.toString().trim(), etPassword.toString().trim()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull @org.jetbrains.annotations.NotNull Task<AuthResult> task) {
+                            if (task.isSuccessful()){
+                                Toast.makeText(getContext(),"Login Success!",Toast.LENGTH_LONG).show();
+                                Navigation.findNavController(view).navigate(R.id.action_login_to_map);
+                            }
+                        }
+                    });
+                }
+            }
+        });
+
+        return view;
+    }
+
+    private boolean validateEmail(EditText etEmail) {
+        String st = etEmail.toString().trim();
+        return !st.isEmpty() && Patterns.EMAIL_ADDRESS.matcher(st).matches();
+    }
+
+    private boolean validatePassword(EditText etPassword) {
+        String st = etPassword.toString().trim();
+        return st.length() < 6;
     }
 }
