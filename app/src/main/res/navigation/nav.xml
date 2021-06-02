@@ -18,15 +18,31 @@
         <action
             android:id="@+id/action_welcome_to_signup"
             app:destination="@id/signup" />
+        <action
+            android:id="@+id/action_welcome_to_map"
+            app:destination="@id/map" />
     </fragment>
     <fragment
         android:id="@+id/login"
         android:name="com.example.acatch.login"
         android:label="fragment_login"
-        tools:layout="@layout/fragment_login" />
+        tools:layout="@layout/fragment_login" >
+        <action
+            android:id="@+id/action_login_to_map"
+            app:destination="@id/map" />
+    </fragment>
     <fragment
         android:id="@+id/signup"
         android:name="com.example.acatch.signup"
         android:label="fragment_signup"
-        tools:layout="@layout/fragment_signup" />
+        tools:layout="@layout/fragment_signup" >
+        <action
+            android:id="@+id/action_signup_to_map"
+            app:destination="@id/map" />
+    </fragment>
+    <fragment
+        android:id="@+id/map"
+        android:name="com.example.acatch.map"
+        android:label="fragment_map"
+        tools:layout="@layout/fragment_map" />
 </navigation>
