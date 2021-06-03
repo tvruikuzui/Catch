@@ -4,9 +4,15 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ProgressBar;
+
+import com.google.firebase.auth.FirebaseAuth;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -14,6 +20,15 @@ import android.view.ViewGroup;
  * create an instance of this fragment.
  */
 public class signup extends Fragment {
+
+    Button btnSignup;
+    EditText etEmail;
+    EditText etPassword;
+    EditText etAge;
+    EditText etPhone;
+    EditText etFullName;
+    ProgressBar pb;
+
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -59,6 +74,51 @@ public class signup extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_signup, container, false);
+        View view =  inflater.inflate(R.layout.fragment_signup, container, false);
+
+        etEmail = view.findViewById(R.id.editTextTextEmailAddress);
+        etPassword = view.findViewById(R.id.editTextTextPassword);
+        etAge = view.findViewById(R.id.editTextNumber);
+        etPhone = view.findViewById(R.id.editTextPhone);
+        etFullName = view.findViewById(R.id.editTextTextPersonName);
+        btnSignup = view.findViewById(R.id.btnSignupPage);
+        pb = view.findViewById(R.id.progressBar2);
+
+        btnSignup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pb.setVisibility(View.VISIBLE);
+
+                FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+                //TODO:continue here validate and register user;
+                //firebaseAuth.createUserWithEmailAndPassword()
+
+            }
+        });
+
+        return view;
+    }
+    private boolean validateEmail(EditText etEmail) {
+        String st = etEmail.toString().trim();
+        return !st.isEmpty() && Patterns.EMAIL_ADDRESS.matcher(st).matches();
+    }
+
+    private boolean validatePassword(EditText etPassword) {
+        String st = etPassword.toString().trim();
+        return st.length() < 6;
+    }
+
+    private boolean validatePhone(EditText etPhone) {
+        String st = etPhone.toString().trim();
+        return !st.isEmpty() && Patterns.PHONE.matcher(st).matches();
+    }
+    private boolean validateName(EditText etName) {
+        String st = etName.toString().trim();
+        return st.length() < 4;
+    }
+
+    private boolean validateAge(EditText etage) {
+        int st = Integer.parseInt(etage.toString().trim());
+        return st > 0 && st < 120;
     }
 }
