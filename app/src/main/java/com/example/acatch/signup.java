@@ -1,9 +1,13 @@
 package com.example.acatch;
 
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
+import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,8 +15,21 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -28,6 +45,8 @@ public class signup extends Fragment {
     EditText etPhone;
     EditText etFullName;
     ProgressBar pb;
+    FirebaseFirestore firestore;
+    String userID;
 
 
     // TODO: Rename parameter arguments, choose names that match
@@ -76,6 +95,8 @@ public class signup extends Fragment {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_signup, container, false);
 
+        firestore = FirebaseFirestore.getInstance();
+
         etEmail = view.findViewById(R.id.editTextTextEmailAddress);
         etPassword = view.findViewById(R.id.editTextTextPassword);
         etAge = view.findViewById(R.id.editTextNumber);
@@ -90,8 +111,39 @@ public class signup extends Fragment {
                 pb.setVisibility(View.VISIBLE);
 
                 FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-                //TODO:continue here validate and register user;
-                //firebaseAuth.createUserWithEmailAndPassword()
+                //TODO:validate make the app crash
+                //if (!etEmail.toString().isEmpty() && !etPassword.toString().isEmpty()){
+                if (validateEmail(etEmail) && validateName(etFullName) && validatePassword(etPassword) && validatePhone(etPhone)){
+                    firebaseAuth.createUserWithEmailAndPassword(etEmail.getText().toString().trim(), etPassword.getText().toString().trim()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull @NotNull Task<AuthResult> task) {
+                            if (task.isSuccessful()){
+                                userID = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid();
+
+                                DocumentReference reference = firestore.collection("users").document(userID);
+                                Map<String,Object> user = new HashMap<>();
+                                user.put("fName", etFullName.getText().toString());
+                                user.put("email", etEmail.getText().toString().trim());
+                                user.put("phone", etPhone.getText().toString());
+                                user.put("age", etAge.getText().toString());
+                                reference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        Toast.makeText(getContext(), "Sign Up Successfully!", Toast.LENGTH_LONG).show();
+                                        Intent intent = new Intent(getContext(), CatchMap.class);
+                                        startActivity(intent);
+                                        getActivity().finish();
+                                    }
+                                });
+                            }else {
+                                Toast.makeText(getContext(), "Sign Up Not Successfully!", Toast.LENGTH_LONG).show();
+                                Log.d("signup", task.getResult().toString());
+                                pb.setVisibility(View.GONE);
+                            }
+                        }
+                    });
+                }
+
 
             }
         });
@@ -99,26 +151,28 @@ public class signup extends Fragment {
         return view;
     }
     private boolean validateEmail(EditText etEmail) {
-        String st = etEmail.toString().trim();
-        return !st.isEmpty() && Patterns.EMAIL_ADDRESS.matcher(st).matches();
+        String st = etEmail.getText().toString().trim();
+        return Patterns.EMAIL_ADDRESS.matcher(st).matches();
     }
 
     private boolean validatePassword(EditText etPassword) {
-        String st = etPassword.toString().trim();
-        return st.length() < 6;
+        String st = etPassword.getText().toString().trim();
+        return st.length() > 6;
+
     }
 
     private boolean validatePhone(EditText etPhone) {
-        String st = etPhone.toString().trim();
-        return !st.isEmpty() && Patterns.PHONE.matcher(st).matches();
+        String st = etPhone.getText().toString();
+        return Patterns.PHONE.matcher(st).matches();
     }
     private boolean validateName(EditText etName) {
-        String st = etName.toString().trim();
-        return st.length() < 4;
+        String st = etName.getText().toString();
+        return st.length() > 4;
     }
 
-    private boolean validateAge(EditText etage) {
-        int st = Integer.parseInt(etage.toString().trim());
-        return st > 0 && st < 120;
-    }
+//    private boolean validateAge(EditText etage) {
+//
+//        int st = Integer.valueOf(etage.toString());
+//        return st > 0 && st < 120;
+//    }
 }

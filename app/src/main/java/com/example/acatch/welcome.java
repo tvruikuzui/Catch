@@ -1,5 +1,6 @@
 package com.example.acatch;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -67,7 +68,9 @@ public class welcome extends Fragment {
 
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         if(firebaseAuth.getCurrentUser() != null){
-            Navigation.findNavController(view).navigate(R.id.action_welcome_to_map);
+            Intent intent = new Intent(getContext(), CatchMap.class);
+            startActivity(intent);
+            getActivity().finish();
         }
 
         Button btnLogin = view.findViewById(R.id.btnLogin);

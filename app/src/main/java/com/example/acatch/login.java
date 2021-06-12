@@ -1,5 +1,6 @@
 package com.example.acatch;
 
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 
@@ -90,12 +91,17 @@ public class login extends Fragment {
                 progressBar.setVisibility(View.VISIBLE);
                 if (validateEmail(etEmail) && validatePassword(etPassword)) {
 
-                    firebaseAuth.signInWithEmailAndPassword(etEmail.toString().trim(), etPassword.toString().trim()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    firebaseAuth.signInWithEmailAndPassword(etEmail.getText().toString().trim(), etPassword.getText().toString().trim()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull @org.jetbrains.annotations.NotNull Task<AuthResult> task) {
                             if (task.isSuccessful()){
                                 Toast.makeText(getContext(),"Login Success!",Toast.LENGTH_LONG).show();
-                                Navigation.findNavController(view).navigate(R.id.action_login_to_map);
+                                Intent intent = new Intent(getContext(), CatchMap.class);
+                                startActivity(intent);
+                                getActivity().finish();
+                            }else {
+                                Toast.makeText(getContext(), "Login Not Successfully!", Toast.LENGTH_LONG).show();
+                                progressBar.setVisibility(View.GONE);
                             }
                         }
                     });
@@ -107,12 +113,12 @@ public class login extends Fragment {
     }
 
     private boolean validateEmail(EditText etEmail) {
-        String st = etEmail.toString().trim();
+        String st = etEmail.getText().toString().trim();
         return !st.isEmpty() && Patterns.EMAIL_ADDRESS.matcher(st).matches();
     }
 
     private boolean validatePassword(EditText etPassword) {
-        String st = etPassword.toString().trim();
-        return st.length() < 6;
+        String st = etPassword.getText().toString().trim();
+        return st.length() > 6;
     }
 }
