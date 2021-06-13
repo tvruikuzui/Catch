@@ -1,6 +1,7 @@
 package com.example.acatch;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,15 +16,18 @@ public class CatchMap extends AppCompatActivity {
 
     Button btnLogout;
     FirebaseAuth auth;
+    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_catch_map);
 
-
+        toolbar = findViewById(R.id.toolBar);
         btnLogout = findViewById(R.id.btnLogout);
         auth = FirebaseAuth.getInstance();
+        toolbar.setTitle(R.string.app_name);
+        setSupportActionBar(toolbar);
 
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
