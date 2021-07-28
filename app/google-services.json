@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "863594347453",
+    "firebase_url": "https://firelearning-15089.firebaseio.com",
+    "project_id": "firelearning-15089",
+    "storage_bucket": "firelearning-15089.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:863594347453:android:0ca348caa97b84181b30d4",
+        "android_client_info": {
+          "package_name": "com.example.acatch"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "863594347453-ep1ahiv4v8o1tq7k7s5s501rkvb8do1o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAp3DEx08LyK_pVcRSDNBoxZWBWIZ_1Lmc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "863594347453-ep1ahiv4v8o1tq7k7s5s501rkvb8do1o.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
